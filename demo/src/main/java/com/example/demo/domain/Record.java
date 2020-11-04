@@ -8,7 +8,7 @@ import java.time.ZonedDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "test_table")
+@Table(name = "record")
 public class Record {
     @Id
     @Column(name = "id", columnDefinition = "UUID")

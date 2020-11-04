@@ -31,6 +31,10 @@ public class RecordController {
         return ResponseEntity.ok(savedRecord);
     }
 
+    public RecordController(RecordService recordService) {
+        this.recordService = recordService;
+    }
+
     @DeleteMapping(path = "/records")
     public ResponseEntity<Void> deleteRecord(final @RequestParam(value = "id") UUID id) throws NotFoundException {
         LOGGER.info("Received REST request to delete record with id {}", id);
