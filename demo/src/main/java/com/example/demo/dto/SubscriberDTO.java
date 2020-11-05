@@ -27,4 +27,7 @@ public class SubscriberDTO implements Serializable {
     public void setSubscribesGenres(String[] subscribesGenres) {
         this.subscribesGenres = subscribesGenres;
     }
+
+    public SubscriberDTO() {
+    }
 }

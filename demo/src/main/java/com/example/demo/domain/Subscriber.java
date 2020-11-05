@@ -31,7 +31,9 @@ public class Subscriber {
     }
 
     public Subscriber(SubscriberDTO subscriberDTO){
-        new Subscriber(UUID.randomUUID(), subscriberDTO.getNickname(), subscriberDTO.getSubscribesGenres());
+        this.id = UUID.randomUUID();
+        this.nickname = subscriberDTO.getNickname();
+        this.subscribesGenres = subscriberDTO.getSubscribesGenres();
     }
 
     public UUID getId() {

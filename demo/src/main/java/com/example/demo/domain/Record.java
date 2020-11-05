@@ -75,6 +75,9 @@ public class Record {
     }
 
     public Record(RecordDTO record){
-        new Record(UUID.randomUUID(), record.getDate(), record.getLikes(), record.getLink());
+        this.id = UUID.randomUUID();
+        this.likes = record.getLikes();
+        this.date = record.getDate();
+        this.link = record.getLink();
     }
 }

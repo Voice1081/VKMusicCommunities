@@ -1,59 +1,55 @@
 package com.example.demo.domain;
 
 import com.example.demo.dto.CommunityDTO;
+import com.vladmihalcea.hibernate.type.array.ListArrayType;
+import org.hibernate.annotations.Type;
+import org.hibernate.annotations.TypeDef;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "community")
+@TypeDef(
+        name = "list-array",
+        typeClass = ListArrayType.class
+)
 public class Community {
     @Id
     @Column(name = "id", columnDefinition = "UUID")
     private UUID id;
     @Column(name = "genre", columnDefinition = "TEXT")
     private String genre;
+    @Type(type = "list-array")
     @Column(name = "top_week", columnDefinition = "UUID[]")
-    private UUID[] topWeek;
+    private List<UUID> topWeek = new ArrayList<>();
+    @Type(type = "list-array")
     @Column(name = "top_month", columnDefinition = "UUID[]")
-    private UUID[] topMonth;
+    private List<UUID> topMonth = new ArrayList<>();
+    @Type(type = "list-array")
     @Column(name = "top_year", columnDefinition = "UUID[]")
-    private UUID[] topYear;
+    private List<UUID> topYear = new ArrayList<>();
     @Column(name = "link", columnDefinition = "TEXT")
     private String link;
-
-    @Override
-    public String toString() {
-        return "Community{" +
-                "id=" + id +
-                ", genre='" + genre + '\'' +
-                ", topWeek=" + Arrays.toString(topWeek) +
-                ", topMonth=" + Arrays.toString(topMonth) +
-                ", topYear=" + Arrays.toString(topYear) +
-                ", link='" + link + '\'' +
-                '}';
-    }
 
     public Community() {
     }
 
-    public Community(UUID id, String genre, UUID[] topWeek, UUID[] topMonth, UUID[] topYear, String link) {
-        this.id = id;
-        this.genre = genre;
-        this.topWeek = topWeek;
-        this.topMonth = topMonth;
-        this.topYear = topYear;
-        this.link = link;
-    }
 
     public Community(CommunityDTO communityDTO){
-        new Community(UUID.randomUUID(), communityDTO.getGenre(), communityDTO.getTopWeek(), communityDTO.getTopMonth(),
-                communityDTO.getTopYear(), communityDTO.getLink());
+        this.id = UUID.randomUUID();
+        this.genre = communityDTO.getGenre();
+        this.link = communityDTO.getLink();
+        this.topWeek = communityDTO.getTopWeek();
+        this.topMonth = communityDTO.getTopMonth();
+        this.topYear = communityDTO.getTopYear();
     }
 
     public UUID getId() {
@@ -72,29 +68,6 @@ public class Community {
         this.genre = genre;
     }
 
-    public UUID[] getTopWeek() {
-        return topWeek;
-    }
-
-    public void setTopWeek(UUID[] topWeek) {
-        this.topWeek = topWeek;
-    }
-
-    public UUID[] getTopMonth() {
-        return topMonth;
-    }
-
-    public void setTopMonth(UUID[] topMonth) {
-        this.topMonth = topMonth;
-    }
-
-    public UUID[] getTopYear() {
-        return topYear;
-    }
-
-    public void setTopYear(UUID[] topYear) {
-        this.topYear = topYear;
-    }
 
     public String getLink() {
         return link;
@@ -102,5 +75,41 @@ public class Community {
 
     public void setLink(String link) {
         this.link = link;
+    }
+
+    public List<UUID> getTopWeek() {
+        return topWeek;
+    }
+
+    public void setTopWeek(List<UUID> topWeek) {
+        this.topWeek = topWeek;
+    }
+
+    public List<UUID> getTopMonth() {
+        return topMonth;
+    }
+
+    public void setTopMonth(List<UUID> topMonth) {
+        this.topMonth = topMonth;
+    }
+
+    public List<UUID> getTopYear() {
+        return topYear;
+    }
+
+    public void setTopYear(List<UUID> topYear) {
+        this.topYear = topYear;
+    }
+
+    @Override
+    public String toString() {
+        return "Community{" +
+                "id=" + id +
+                ", genre='" + genre + '\'' +
+                ", topWeek=" + topWeek +
+                ", topMonth=" + topMonth +
+                ", topYear=" + topYear +
+                ", link='" + link + '\'' +
+                '}';
     }
 }

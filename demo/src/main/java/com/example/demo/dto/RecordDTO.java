@@ -51,4 +51,6 @@ public class RecordDTO implements Serializable {
         return link;
     }
 
+    public RecordDTO() {
+    }
 }

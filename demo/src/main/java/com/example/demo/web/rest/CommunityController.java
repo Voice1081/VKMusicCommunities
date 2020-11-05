@@ -35,7 +35,6 @@ public class CommunityController {
     }
 
 
-
     @DeleteMapping(path = "/communities")
     public ResponseEntity<Void> deleteCommunity(final @RequestParam(value = "id") UUID id) throws NotFoundException {
         LOGGER.info("Received REST request to delete community with id {}", id);
@@ -51,7 +50,7 @@ public class CommunityController {
     }
 
     @GetMapping(path = "/communities/all")
-    public ResponseEntity<List<Community>> getAll(){
+    public ResponseEntity<List<Community>> getAll() {
         LOGGER.info("Received REST request to get all communities");
         List<Community> all = communityService.getAll();
         return ResponseEntity.ok(all);
