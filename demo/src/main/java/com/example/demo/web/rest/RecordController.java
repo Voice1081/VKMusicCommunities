@@ -1,11 +1,9 @@
 package com.example.demo.web.rest;
 
 import com.example.demo.domain.Record;
-import com.example.demo.domain.TestTable;
+import com.example.demo.dto.LinkDTO;
 import com.example.demo.dto.RecordDTO;
-import com.example.demo.dto.SimpleDTO;
 import com.example.demo.service.RecordService;
-import com.example.demo.service.TestTableService;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,10 +41,10 @@ public class RecordController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(path = "/records/{link}")
-    public ResponseEntity<List<Record>> getAllByLink(final @PathVariable(value = "link") String link) {
-        LOGGER.info("Received REST request to get all records by link {}", link);
-        List<Record> allByLink = recordService.getAllByLink(link);
+    @GetMapping(path = "/records/link")
+    public ResponseEntity<List<Record>> getAllByLink(final @RequestBody LinkDTO linkDTO) {
+        LOGGER.info("Received REST request to get all records by link {}", linkDTO);
+        List<Record> allByLink = recordService.getAllByLink(linkDTO.getLink());
         return ResponseEntity.ok(allByLink);
     }
 
