@@ -1,9 +1,8 @@
 package com.example.demo.service;
 
 import com.example.demo.domain.Record;
-import com.example.demo.domain.TestTable;
 import com.example.demo.domain.repository.RecordRepository;
-import com.example.demo.domain.repository.TestTableRepository;
+import com.example.demo.service.util.PreworkChecker;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,13 +19,16 @@ public class RecordService {
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordService.class);
 
     private RecordRepository recordRepository;
+    private PreworkChecker preworkChecker;
 
-    public RecordService(RecordRepository recordRepository) {
+    public RecordService(RecordRepository recordRepository, PreworkChecker preworkChecker) {
         this.recordRepository = recordRepository;
+        this.preworkChecker = preworkChecker;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Record saveNewRecord(final Record record) {
+        preworkChecker.throwIfRecordAlreadyExists(record.getId());
         Record newRecord = recordRepository.save(record);
         LOGGER.info("Created new Record object {}", newRecord);
         return newRecord;
@@ -38,28 +40,20 @@ public class RecordService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Record updateRecord(final Record record) throws NotFoundException {
-        if(recordRepository.existsById(record.getId())) {
-            Record savedRecord = recordRepository.save(record);
-            LOGGER.info("Updated community object {}", record);
-            return savedRecord;
-        }
-        else{
-            throw new NotFoundException(String.format("Not found record with id %s", record.getId()));
-        }
+        preworkChecker.throwIfRecordDoesNotExists(record.getId());
+        Record savedRecord = recordRepository.save(record);
+        LOGGER.info("Updated community object {}", record);
+        return savedRecord;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteRecord(UUID id) throws NotFoundException {
-        if(recordRepository.existsById(id)) {
-            recordRepository.deleteById(id);
-            LOGGER.info("Deleted record object with id {}", id);
-        }
-        else{
-            throw new NotFoundException(String.format("Not found record with id %s", id));
-        }
+        preworkChecker.throwIfRecordDoesNotExists(id);
+        recordRepository.deleteById(id);
+        LOGGER.info("Deleted record object with id {}", id);
     }
 
-    public List<Record> getAllByLink(String link){
+    public List<Record> getAllByLink(String link) {
         return recordRepository.getAllByLink(link);
     }
 }
