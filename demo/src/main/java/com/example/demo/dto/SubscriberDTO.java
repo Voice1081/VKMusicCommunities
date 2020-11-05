@@ -1,13 +1,14 @@
 package com.example.demo.dto;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 public class SubscriberDTO implements Serializable {
     private String nickname;
-    private String[] subscribesGenres;
+    private List<String> subscribesGenres;
 
-    public SubscriberDTO(String nickname, String[] subscribesGenres) {
+    public SubscriberDTO(String nickname, List<String> subscribesGenres) {
         this.nickname = nickname;
         this.subscribesGenres = subscribesGenres;
     }
@@ -20,11 +21,11 @@ public class SubscriberDTO implements Serializable {
         this.nickname = nickname;
     }
 
-    public String[] getSubscribesGenres() {
+    public List<String> getSubscribesGenres() {
         return subscribesGenres;
     }
 
-    public void setSubscribesGenres(String[] subscribesGenres) {
+    public void setSubscribesGenres(List<String> subscribesGenres) {
         this.subscribesGenres = subscribesGenres;
     }
 

@@ -34,7 +34,7 @@ public class SubscriberController {
 
 
     @DeleteMapping(path = "/subscribers")
-    public ResponseEntity<Void> deleteCommunity(final @RequestParam(value = "id") UUID id) throws NotFoundException {
+    public ResponseEntity<Void> deleteSubscriber(final @RequestParam(value = "id") UUID id) throws NotFoundException {
         LOGGER.info("Received REST request to delete subscriber with id {}", id);
         subscriberService.deleteSubscriber(id);
         return ResponseEntity.ok().build();

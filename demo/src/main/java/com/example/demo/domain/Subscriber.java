@@ -2,12 +2,15 @@ package com.example.demo.domain;
 
 import com.example.demo.dto.CommunityDTO;
 import com.example.demo.dto.SubscriberDTO;
+import org.hibernate.annotations.Type;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -18,13 +21,23 @@ public class Subscriber {
     private UUID id;
     @Column(name = "nickname", columnDefinition = "TEXT")
     private String nickname;
+    @Type(type = "list-array")
     @Column(name = "subscribes_genres", columnDefinition = "TEXT[]")
-    private String[] subscribesGenres;
+    private List<String> subscribesGenres = new ArrayList<>();
+
+    @Override
+    public String toString() {
+        return "Subscriber{" +
+                "id=" + id +
+                ", nickname='" + nickname + '\'' +
+                ", subscribesGenres=" + subscribesGenres +
+                '}';
+    }
 
     public Subscriber() {
     }
 
-    public Subscriber(UUID id, String nickname, String[] subscribesGenres) {
+    public Subscriber(UUID id, String nickname, List<String> subscribesGenres) {
         this.id = id;
         this.nickname = nickname;
         this.subscribesGenres = subscribesGenres;
@@ -52,11 +65,11 @@ public class Subscriber {
         this.nickname = nickname;
     }
 
-    public String[] getSubscribesGenres() {
+    public List<String> getSubscribesGenres() {
         return subscribesGenres;
     }
 
-    public void setSubscribesGenres(String[] subscribesGenres) {
+    public void setSubscribesGenres(List<String> subscribesGenres) {
         this.subscribesGenres = subscribesGenres;
     }
 }

@@ -42,8 +42,8 @@ public class CommunityController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping(path = "/communities/{link}")
-    public ResponseEntity<List<Community>> getAllByLink(final @PathVariable(value = "link") String link) {
+    @GetMapping(path = "/communities/link")
+    public ResponseEntity<List<Community>> getAllByLink(final @RequestParam(value = "link") String link) {
         LOGGER.info("Received REST request to get all communities by link {}", link);
         List<Community> allByLink = communityService.getAllByLink(link);
         return ResponseEntity.ok(allByLink);
