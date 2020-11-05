@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import com.example.demo.domain.Community;
 import com.example.demo.domain.repository.CommunityRepository;
+import com.example.demo.service.util.PreworkChecker;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,12 +20,16 @@ public class CommunityService {
 
     private CommunityRepository communityRepository;
 
-    public CommunityService(CommunityRepository communityRepository) {
+    private PreworkChecker preworkChecker;
+
+    public CommunityService(CommunityRepository communityRepository, PreworkChecker preworkChecker) {
         this.communityRepository = communityRepository;
+        this.preworkChecker = preworkChecker;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Community saveNewCommunity(final Community community) {
+        preworkChecker.throwIfCommunityAlreadyExists(community.getId());
         Community newCommunity = communityRepository.save(community);
         LOGGER.info("Created new Community object {}", community);
         return newCommunity;
@@ -36,27 +41,20 @@ public class CommunityService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Community updateCommunity(final Community community) throws NotFoundException {
-        if(communityRepository.existsById(community.getId())) {
-            Community savedCommunity = communityRepository.save(community);
-            LOGGER.info("Updated community object {}", community);
-            return savedCommunity;
-        }
-        else{
-            throw new NotFoundException(String.format("Not found community with id %s", community.getId()));
-        }
+        preworkChecker.throwIfCommunityDoesNotExists(community.getId());
+        Community savedCommunity = communityRepository.save(community);
+        LOGGER.info("Updated community object {}", community);
+        return savedCommunity;
+
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void deleteCommunity(UUID id) throws NotFoundException {
-        if(communityRepository.existsById(id)) {
-            communityRepository.deleteById(id);
-        }
-        else{
-            throw new NotFoundException(String.format("Not found community with id %s", id));
-        }
+        preworkChecker.throwIfCommunityDoesNotExists(id);
+        communityRepository.deleteById(id);
     }
 
-    public List<Community> getAllByLink(String link){
+    public List<Community> getAllByLink(String link) {
         return communityRepository.getAllByLink(link);
     }
 }

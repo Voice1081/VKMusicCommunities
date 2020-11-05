@@ -42,7 +42,7 @@ public class RecordController {
     }
 
     @GetMapping(path = "/records/link")
-    public ResponseEntity<List<Record>> getAllByLink(final @RequestBody LinkDTO linkDTO) {
+    public ResponseEntity<List<Record>> getAllByLink(final @RequestParam(value = "link") LinkDTO linkDTO) {
         LOGGER.info("Received REST request to get all records by link {}", linkDTO);
         List<Record> allByLink = recordService.getAllByLink(linkDTO.getLink());
         return ResponseEntity.ok(allByLink);
