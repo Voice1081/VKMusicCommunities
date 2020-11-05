@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 
 public class RecordDTO implements Serializable {
-    private String id;
+    //private String id;
 
     private ZonedDateTime date;
 
@@ -12,8 +12,14 @@ public class RecordDTO implements Serializable {
 
     private String link;
 
-    public void setId(String id) {
-        this.id = id;
+//    public void setId(String id) {
+//        this.id = id;
+//    }
+
+    public RecordDTO(ZonedDateTime date, int likes, String link) {
+        this.date = date;
+        this.likes = likes;
+        this.link = link;
     }
 
     public void setDate(ZonedDateTime date) {
@@ -28,9 +34,10 @@ public class RecordDTO implements Serializable {
         this.link = link;
     }
 
-    public String getId() {
-        return id;
-    }
+
+//    public String getId() {
+//        return id;
+//    }
 
     public ZonedDateTime getDate() {
         return date;

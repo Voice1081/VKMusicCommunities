@@ -27,8 +27,9 @@ public class RecordService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Record saveNewRecord(final Record record) {
-        LOGGER.info("Created new Record object {}", record);
-        return recordRepository.save(record);
+        Record newRecord = recordRepository.save(record);
+        LOGGER.info("Created new Record object {}", newRecord);
+        return newRecord;
     }
 
     public List<Record> getAll() {
@@ -38,7 +39,9 @@ public class RecordService {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Record updateRecord(final Record record) throws NotFoundException {
         if(recordRepository.existsById(record.getId())) {
-            return recordRepository.save(record);
+            Record savedRecord = recordRepository.save(record);
+            LOGGER.info("Updated community object {}", record);
+            return savedRecord;
         }
         else{
             throw new NotFoundException(String.format("Not found record with id %s", record.getId()));
@@ -49,6 +52,7 @@ public class RecordService {
     public void deleteRecord(UUID id) throws NotFoundException {
         if(recordRepository.existsById(id)) {
             recordRepository.deleteById(id);
+            LOGGER.info("Deleted record object with id {}", id);
         }
         else{
             throw new NotFoundException(String.format("Not found record with id %s", id));

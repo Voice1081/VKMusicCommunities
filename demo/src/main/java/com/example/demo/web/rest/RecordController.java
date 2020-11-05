@@ -22,18 +22,19 @@ public class RecordController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RecordController.class);
 
-
+    public RecordController(RecordService recordService) {
+        this.recordService = recordService;
+    }
 
     @PostMapping(path = "/records")
-    public ResponseEntity<Record> saveNewRecord(final @RequestBody Record record) {
+    public ResponseEntity<Record> saveNewRecord(final @RequestBody RecordDTO recordDTO) {
+        Record record = new Record(recordDTO);
         LOGGER.info("Received REST request to save new record {}", record);
         Record savedRecord = recordService.saveNewRecord(record);
         return ResponseEntity.ok(savedRecord);
     }
 
-    public RecordController(RecordService recordService) {
-        this.recordService = recordService;
-    }
+
 
     @DeleteMapping(path = "/records")
     public ResponseEntity<Void> deleteRecord(final @RequestParam(value = "id") UUID id) throws NotFoundException {

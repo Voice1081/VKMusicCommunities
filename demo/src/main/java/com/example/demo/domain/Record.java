@@ -1,5 +1,7 @@
 package com.example.demo.domain;
 
+import com.example.demo.dto.RecordDTO;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -70,5 +72,9 @@ public class Record {
         this.date = date;
         this.likes = likes;
         this.link = link;
+    }
+
+    public Record(RecordDTO record){
+        new Record(UUID.randomUUID(), record.getDate(), record.getLikes(), record.getLink());
     }
 }
