@@ -12,17 +12,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.springframework.stereotype.Service;
 
 public class PostUtil {
     private static final Pattern HASHTAG_PATTERN = Pattern.compile("#([\\w_-]+)");
+    private static final Pattern VK_LINK_PATTERN = Pattern.compile("(\\[([\\w\\?\\:\\-\\=\\/\\.]+)\\|([\\w\\s\\-а-яА-Я]+)\\])");
+
 
     public static List<PostMeta> parseReceivedMeta(final Map<Long, JsonElement> responseMap) {
         List<PostMeta> allMeta = new LinkedList<>();
         responseMap.keySet().forEach(domain -> {
             JsonElement domainResponse = responseMap.get(domain);
-            JsonArray responseArray =
-                domainResponse.getAsJsonObject().get("response").getAsJsonArray();
+            JsonArray responseArray = domainResponse.getAsJsonArray();
             responseArray.forEach(responsePart -> {
                 JsonObject responseChunk = responsePart.getAsJsonObject();
                 JsonArray ids = responseChunk.get("ids").getAsJsonArray();
@@ -44,6 +44,22 @@ public class PostUtil {
         return allMeta;
     }
 
+    public static String getLabelFromText(final String message) {
+        String rawLabel = message.split("\n")[0];
+        return unlinkLabel(rawLabel);
+    }
+
+    private static String unlinkLabel(final String label) {
+        String newLink = label;
+
+        Matcher matcher = VK_LINK_PATTERN.matcher(label);
+        while(matcher.find()) {
+            newLink = newLink.replace(matcher.group(0), matcher.group(3));
+        }
+
+        return newLink;
+    }
+
     public static boolean checkIsPostDesired(final WallPostFull post, final List<String> genres) {
         List<String> foundGenres = getAllHashtagsFromString(post.getText());
         HashSet<String> stringHashSet = new HashSet<>(foundGenres);
@@ -55,10 +71,8 @@ public class PostUtil {
         Matcher matcher = HASHTAG_PATTERN.matcher(message);
         List<String> hashtags = new ArrayList<>();
 
-        int currentGroup = 0;
         while(matcher.find()) {
-            hashtags.add(matcher.group(currentGroup));
-            currentGroup++;
+            hashtags.add(matcher.group(1));
         }
 
         return hashtags;

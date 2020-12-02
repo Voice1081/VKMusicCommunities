@@ -1,15 +1,17 @@
 package com.example.demo.web.rest;
 
-import com.example.demo.domain.Record;
-import com.example.demo.dto.TopPostRequest;
+import com.example.demo.dto.PostDto;
+import com.example.demo.dto.enumeration.PostRange;
 import com.example.demo.service.PostsService;
 import io.swagger.annotations.Api;
+import java.util.Arrays;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -24,12 +26,14 @@ public class TopPostsController {
         this.postsService = postsService;
     }
 
-    public ResponseEntity<List<Record>> getTopPosts(
-        final @RequestBody TopPostRequest topPostRequest) {
+    @GetMapping(path = "/topPosts")
+    public ResponseEntity<List<PostDto>> getTopPosts(
+        final @RequestParam("range") PostRange postRange,
+        final @RequestParam("genres") String[] genres) {
         LOGGER
-            .info("REST request to get top posts for {} with genres {}", topPostRequest.getRange(),
-                String.join(", ", topPostRequest.getGenres()));
+            .info("REST request to get top posts for {} with genres {}", postRange,
+                String.join(", ", genres));
         return ResponseEntity.ok(postsService
-            .getRecordsForGenreList(topPostRequest.getGenres(), topPostRequest.getRange()));
+            .getRecordsForGenreList(Arrays.asList(genres), postRange));
     }
 }

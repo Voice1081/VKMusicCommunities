@@ -57,7 +57,7 @@ public class VkApiRequestExecutor {
 
     public List<WallPostFull> getFullPosts(final List<PostMeta> postMetaList) {
         List<String> posts = postMetaList.stream()
-            .map(postMeta -> String.format("%s_%s", postMeta.getCommunityId(), postMeta.getId()))
+            .map(postMeta -> String.format("-%s_%s", postMeta.getCommunityId(), postMeta.getId()))
             .collect(Collectors.toList());
 
         try {
