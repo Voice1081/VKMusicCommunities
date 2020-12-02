@@ -1,5 +1,6 @@
 package com.example.demo.bot;
 
+import com.example.demo.domain.Subscriber;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -10,6 +11,8 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.io.Serializable;
 import java.util.List;
+
+import static com.example.demo.util.TelegramUtil.createMessageTemplate;
 
 @Component
 public class Bot extends TelegramLongPollingBot {
@@ -43,7 +46,6 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         List<PartialBotApiMethod<? extends Serializable>> messagesToSend = updateReceiver.handle(update);
-
         if (messagesToSend != null && !messagesToSend.isEmpty()) {
             messagesToSend.forEach(response -> {
                 if (response instanceof SendMessage) {
@@ -58,5 +60,11 @@ public class Bot extends TelegramLongPollingBot {
             execute(sendMessage);
         } catch (TelegramApiException e) {
         }
+    }
+
+    public void SendMessageToSubscriber(Subscriber subscriber, String text){
+        SendMessage sm = createMessageTemplate(Long.toString(subscriber.getChatId()));
+        sm.setText(text);
+        executeWithExceptionCheck(sm);
     }
 }
