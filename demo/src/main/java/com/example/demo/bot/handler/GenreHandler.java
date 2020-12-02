@@ -34,9 +34,12 @@ public class GenreHandler implements Handler {
     public List<PartialBotApiMethod<? extends Serializable>> handle(Subscriber subscriber, Update update) {
         if (!update.hasCallbackQuery()) return null;
         Gson gson = new Gson();
-        Type strStrMapType = new TypeToken<Map<String, String>>() {
+        Type strStrHashMapType = new TypeToken<HashMap<String, String>>() {
         }.getType();
-        Map<String, String> callBack = gson.fromJson(update.getCallbackQuery().getData(), strStrMapType);
+        HashMap<String, String> callBack = gson.fromJson(update.getCallbackQuery().getData(), strStrHashMapType);
+
+        if(!(callBack.containsKey("Genre") && callBack.containsKey("Action")))
+            throw new UnsupportedOperationException();
 
         String genre = callBack.get("Genre");
         String action = callBack.get("Action");
@@ -44,21 +47,25 @@ public class GenreHandler implements Handler {
         SendMessage response = createMessageTemplate(subscriber);
 
         if (action.equals("Subscribe")) {
-            subscriber.getSubscribersGenres().add(genre);
-            try {
-                subscriberService.updateSubscriber(subscriber);
-            } catch (NotFoundException e) {
-                e.printStackTrace();
+            if(!subscriber.getSubscribersGenres().contains(genre)) {
+                subscriber.getSubscribersGenres().add(genre);
+                try {
+                    subscriberService.updateSubscriber(subscriber);
+                } catch (NotFoundException e) {
+                    e.printStackTrace();
+                }
+                response.setText(String.format("Вы подписались на уведомления по жанру %s", genre));
             }
-            response.setText(String.format("Вы подписались на уведомления по жанру %s", genre));
         } else if (action.equals("Unsubscribe")) {
-            subscriber.getSubscribersGenres().remove(genre);
-            try {
-                subscriberService.updateSubscriber(subscriber);
-            } catch (NotFoundException e) {
-                e.printStackTrace();
+            if(subscriber.getSubscribersGenres().contains(genre)) {
+                subscriber.getSubscribersGenres().remove(genre);
+                try {
+                    subscriberService.updateSubscriber(subscriber);
+                } catch (NotFoundException e) {
+                    e.printStackTrace();
+                }
+                response.setText(String.format("Вы отписались от уведомлений по жанру %s", genre));
             }
-            response.setText(String.format("Вы отписались от уведомлений по жанру %s", genre));
         } else if (action.equals("Top day")) {
             response.setText(String.format("Топ за день по жанру %s", genre));
         } else if (action.equals("Top week")) {
@@ -74,6 +81,7 @@ public class GenreHandler implements Handler {
 
         InlineKeyboardButton topDay = new InlineKeyboardButton();
         HashMap<String, String> topDayCallback = new HashMap<>();
+        topDayCallback.put("Handler", "GENRE");
         topDayCallback.put("Genre", genre);
         topDayCallback.put("Action", "Top day");
         topDay.setCallbackData(gson.toJson(topDayCallback));
@@ -82,6 +90,7 @@ public class GenreHandler implements Handler {
 
         InlineKeyboardButton topWeek = new InlineKeyboardButton();
         HashMap<String, String> topWeekCallback = new HashMap<>();
+        topWeekCallback.put("Handler", "GENRE");
         topWeekCallback.put("Genre", genre);
         topWeekCallback.put("Action", "Top week");
         topWeek.setCallbackData(gson.toJson(topWeekCallback));
@@ -90,6 +99,7 @@ public class GenreHandler implements Handler {
 
         InlineKeyboardButton topMonth = new InlineKeyboardButton();
         HashMap<String, String> topMonthCallback = new HashMap<>();
+        topMonthCallback.put("Handler", "GENRE");
         topMonthCallback.put("Genre", genre);
         topMonthCallback.put("Action", "Top month");
         topMonth.setCallbackData(gson.toJson(topMonthCallback));
@@ -98,6 +108,7 @@ public class GenreHandler implements Handler {
 
         InlineKeyboardButton subscribed = new InlineKeyboardButton();
         HashMap<String, String> subscsribedCallback = new HashMap<>();
+        subscsribedCallback.put("Handler", "GENRE");
         subscsribedCallback.put("Genre", genre);
         if (subscriber.getSubscribersGenres().contains(genre)) {
             subscsribedCallback.put("Action", "Unsubscribe");
@@ -115,17 +126,12 @@ public class GenreHandler implements Handler {
     }
 
     @Override
-    public String operatedBotState() {
-        return "CHOOSING GENRE";
-    }
-
-    @Override
     public String operatedCommand() {
         return null;
     }
 
     @Override
-    public List<String> operatedCallBackQuery() {
-        return Collections.emptyList();
+    public String operatedCallBackQuery() {
+        return "GENRE";
     }
 }

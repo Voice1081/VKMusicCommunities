@@ -26,8 +26,6 @@ public class Subscriber {
     private List<String> subscribersGenres = new ArrayList<>();
     @Column(name = "chat_id", columnDefinition = "INTEGER")
     private long chatId;
-    @Column(name = "bot_state", columnDefinition = "VARCHAR")
-    private String botState;
 
     @Override
     public String toString() {
@@ -36,19 +34,17 @@ public class Subscriber {
                 ", nickname='" + nickname + '\'' +
                 ", subscribersGenres=" + subscribersGenres +
                 ", chatId=" + chatId +
-                ", botState='" + botState + '\'' +
                 '}';
     }
 
     public Subscriber() {
     }
 
-    public Subscriber(UUID id, String nickname, List<String> subscribersGenres, int chatId, String botState) {
+    public Subscriber(UUID id, String nickname, List<String> subscribersGenres, int chatId) {
         this.id = id;
         this.nickname = nickname;
         this.subscribersGenres = subscribersGenres;
         this.chatId = chatId;
-        this.botState = botState;
     }
 
     public Subscriber(String nickname, long chatId) {
@@ -56,7 +52,6 @@ public class Subscriber {
         this.nickname = nickname;
         this.subscribersGenres = new ArrayList<>();
         this.chatId = chatId;
-        this.botState = "START";
     }
 
     public Subscriber(SubscriberDTO subscriberDTO){
@@ -95,13 +90,5 @@ public class Subscriber {
 
     public void setChatId(int chatId) {
         this.chatId = chatId;
-    }
-
-    public String getBotState() {
-        return botState;
-    }
-
-    public void setBotState(String botState) {
-        this.botState = botState;
     }
 }

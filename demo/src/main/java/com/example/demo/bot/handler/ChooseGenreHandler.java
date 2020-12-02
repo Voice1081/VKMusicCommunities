@@ -3,8 +3,6 @@ package com.example.demo.bot.handler;
 import com.example.demo.domain.Subscriber;
 import com.example.demo.service.SubscriberService;
 import com.google.gson.Gson;
-import javassist.NotFoundException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -12,7 +10,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
-import springfox.documentation.spring.web.json.Json;
 
 import java.io.Serializable;
 import java.util.*;
@@ -43,27 +40,17 @@ public class ChooseGenreHandler implements Handler {
         for(String genre : listOfGenres){
             InlineKeyboardButton button = new InlineKeyboardButton();
             button.setText(genre);
-            HashMap<String, String> callBack = new HashMap<>();
-            callBack.put("Genre", genre);
-            callBack.put("Action", "none");
-            button.setCallbackData(new Gson().toJson(callBack));
+            HashMap<String, String> callBackData = new HashMap<>();
+            callBackData.put("Handler", "GENRE");
+            callBackData.put("Genre", genre);
+            callBackData.put("Action", "none");
+            button.setCallbackData(new Gson().toJson(callBackData));
             buttons.add(Arrays.asList(button));
         }
         inlineKeyboardMarkup.setKeyboard(buttons);
-        genres.setText("выбирай че хочешь");
+        genres.setText("Список доступных жанров:");
         genres.setReplyMarkup(inlineKeyboardMarkup);
-        subscriber.setBotState("CHOOSING GENRE");
-        try {
-            subscriberService.updateSubscriber(subscriber);
-        } catch (NotFoundException e) {
-            e.printStackTrace();
-        }
         return Arrays.asList(genres);
-    }
-
-    @Override
-    public String operatedBotState() {
-        return null;
     }
 
     @Override
@@ -72,7 +59,7 @@ public class ChooseGenreHandler implements Handler {
     }
 
     @Override
-    public List<String> operatedCallBackQuery() {
-        return Collections.emptyList();
+    public String operatedCallBackQuery() {
+        return null;
     }
 }

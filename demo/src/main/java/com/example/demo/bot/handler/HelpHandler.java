@@ -10,7 +10,6 @@ import org.telegram.telegrambots.meta.api.objects.Update;
 
 import java.io.Serializable;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import static com.example.demo.util.TelegramUtil.createMessageTemplate;
@@ -34,17 +33,12 @@ public class HelpHandler implements Handler {
     }
 
     @Override
-    public String operatedBotState() {
-        return null;
-    }
-
-    @Override
     public String operatedCommand() {
         return "/help";
     }
 
     @Override
-    public List<String> operatedCallBackQuery() {
-        return Collections.emptyList();
+    public String operatedCallBackQuery() {
+        return null;
     }
 }

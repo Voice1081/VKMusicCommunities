@@ -2,19 +2,16 @@ package com.example.demo.dto;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.UUID;
 
 public class SubscriberDTO implements Serializable {
     private String nickname;
     private List<String> subscribersGenres;
     private int chatId;
-    private String state;
 
-    public SubscriberDTO(String nickname, List<String> subscribersGenres, int chatId, String state) {
+    public SubscriberDTO(String nickname, List<String> subscribersGenres, int chatId) {
         this.nickname = nickname;
         this.subscribersGenres = subscribersGenres;
         this.chatId = chatId;
-        this.state = state;
     }
 
     public String getNickname() {
@@ -39,14 +36,6 @@ public class SubscriberDTO implements Serializable {
 
     public void setChatId(int chatId) {
         this.chatId = chatId;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
     }
 
     public SubscriberDTO() {

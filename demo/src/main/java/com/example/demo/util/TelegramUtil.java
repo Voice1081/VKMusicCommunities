@@ -9,7 +9,6 @@ public class TelegramUtil {
         return createMessageTemplate(String.valueOf(subscriber.getChatId()));
     }
 
-    // Creating template of SendMessage with enabled Markdown
     public static SendMessage createMessageTemplate(String chatId) {
         SendMessage sm = new SendMessage();
         sm.setChatId(chatId);
@@ -17,7 +16,6 @@ public class TelegramUtil {
         return sm;
     }
 
-    // Creating button
     public static InlineKeyboardButton createInlineKeyboardButton(String text, String command) {
         InlineKeyboardButton ikb = new InlineKeyboardButton();
         ikb.setText(text);

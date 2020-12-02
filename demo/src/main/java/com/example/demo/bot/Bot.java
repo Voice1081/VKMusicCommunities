@@ -23,8 +23,6 @@ public class Bot extends TelegramLongPollingBot {
     private final UpdateReceiver updateReceiver;
 
     public Bot(UpdateReceiver updateReceiver) {
-//        this.botUsername = botUsername;
-//        this.botToken = botToken;
         this.updateReceiver = updateReceiver;
     }
 

@@ -1,8 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.Community;
 import com.example.demo.domain.Subscriber;
-import com.example.demo.domain.repository.CommunityRepository;
 import com.example.demo.domain.repository.SubscriberRepository;
 import com.example.demo.service.util.PreworkChecker;
 import javassist.NotFoundException;
