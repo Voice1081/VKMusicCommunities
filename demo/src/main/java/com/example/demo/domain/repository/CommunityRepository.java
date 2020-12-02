@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Repository
-public interface CommunityRepository extends JpaRepository<Community, UUID> {
+public interface CommunityRepository extends JpaRepository<Community, Long> {
     @Query("select tt from Community tt where tt.link = :link")
     List<Community> getAllByLink(final @Param("link") String link);
 }
