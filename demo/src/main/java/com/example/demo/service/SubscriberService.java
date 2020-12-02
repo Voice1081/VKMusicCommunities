@@ -1,8 +1,6 @@
 package com.example.demo.service;
 
-import com.example.demo.domain.Community;
 import com.example.demo.domain.Subscriber;
-import com.example.demo.domain.repository.CommunityRepository;
 import com.example.demo.domain.repository.SubscriberRepository;
 import com.example.demo.service.util.PreworkChecker;
 import javassist.NotFoundException;
@@ -30,8 +28,8 @@ public class SubscriberService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Subscriber saveNewSubscriber(final Subscriber subscriber) {
+        preworkChecker.throwIfSubscriberAlreadyExists(subscriber.getId());
         Subscriber newSubscriber = subscriberRepository.save(subscriber);
-        preworkChecker.throwIfSubscriberAlreadyExists(newSubscriber.getId());
         LOGGER.info("Created new Subscriber object {}", subscriber);
         return newSubscriber;
     }
@@ -56,5 +54,9 @@ public class SubscriberService {
 
     public List<Subscriber> getAllByNickname(String nickname) {
         return subscriberRepository.getAllByNickname(nickname);
+    }
+
+    public List<Subscriber> getAllByChatId(int chatId) {
+        return subscriberRepository.getAllByChatId(chatId);
     }
 }
