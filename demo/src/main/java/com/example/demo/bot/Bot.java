@@ -1,6 +1,8 @@
 package com.example.demo.bot;
 
 import com.example.demo.domain.Subscriber;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
@@ -16,6 +18,7 @@ import static com.example.demo.util.TelegramUtil.createMessageTemplate;
 
 @Component
 public class Bot extends TelegramLongPollingBot {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Bot.class);
 
     @Value("${bot.name}")
     private String botUsername;
@@ -59,10 +62,12 @@ public class Bot extends TelegramLongPollingBot {
         try {
             execute(sendMessage);
         } catch (TelegramApiException e) {
+            LOGGER.error("Error while executing telegram query", e);
         }
     }
 
-    public void SendMessageToSubscriber(Subscriber subscriber, String text){
+    public void sendMessageToSubscriber(Subscriber subscriber, String text){
+        LOGGER.debug("Sending to subscriber {} new message: {}", subscriber.getNickname(), text);
         SendMessage sm = createMessageTemplate(Long.toString(subscriber.getChatId()));
         sm.setText(text);
         executeWithExceptionCheck(sm);
