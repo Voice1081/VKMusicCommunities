@@ -18,7 +18,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping(value = "/api")
 public class CommunityController {
-    private CommunityService communityService;
+    private final CommunityService communityService;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CommunityController.class);
 
@@ -28,15 +28,14 @@ public class CommunityController {
 
     @PostMapping(path = "/communities")
     public ResponseEntity<Community> saveNewCommunity(final @RequestBody CommunityDTO communityDTO) {
-        Community community = new Community(communityDTO);
-        LOGGER.info("Received REST request to save new community {}", community);
-        Community savedCommunity = communityService.saveNewCommunity(community);
+        LOGGER.info("Received REST request to save new community {}", communityDTO);
+        Community savedCommunity = communityService.saveNewCommunity(communityDTO);
         return ResponseEntity.ok(savedCommunity);
     }
 
 
     @DeleteMapping(path = "/communities")
-    public ResponseEntity<Void> deleteCommunity(final @RequestParam(value = "id") UUID id) throws NotFoundException {
+    public ResponseEntity<Void> deleteCommunity(final @RequestParam(value = "id") long id) throws NotFoundException {
         LOGGER.info("Received REST request to delete community with id {}", id);
         communityService.deleteCommunity(id);
         return ResponseEntity.ok().build();
@@ -57,7 +56,7 @@ public class CommunityController {
     }
 
     @PutMapping(path = "/communities")
-    public ResponseEntity<Community> updateCommunity(final @RequestBody Community community) throws NotFoundException {
+    public ResponseEntity<Community> updateCommunity(final @RequestBody CommunityDTO community) throws NotFoundException {
         LOGGER.info("Received REST request to update community {}", community);
         Community updatedCommunity = communityService.updateCommunity(community);
         return ResponseEntity.ok(updatedCommunity);

@@ -1,2 +1,10 @@
 CREATE TABLE COMMUNITY
-(id UUID PRIMARY KEY, genre TEXT, top_week UUID[], top_month UUID[], top_year UUID[], link TEXT)
+(
+    community_id bigint PRIMARY KEY,
+    name TEXT,
+    domain text,
+    genre text[],
+    top_year UUID[],
+    link TEXT,
+    last_post_time bigint
+)
