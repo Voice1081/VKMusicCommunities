@@ -1,6 +1,8 @@
 package com.example.demo.bot.handler;
 
+import com.example.demo.domain.Genre;
 import com.example.demo.domain.Subscriber;
+import com.example.demo.service.GenreService;
 import com.example.demo.service.SubscriberService;
 import com.google.gson.Gson;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,8 +24,10 @@ public class ChooseGenreHandler implements Handler {
     private String botUsername;
 
     private final SubscriberService subscriberService;
+    private final GenreService genreService;
 
-    public ChooseGenreHandler(SubscriberService subscriberService) {
+    public ChooseGenreHandler(SubscriberService subscriberService, GenreService genreService) {
+        this.genreService = genreService;
         this.subscriberService = subscriberService;
     }
 
@@ -31,18 +35,15 @@ public class ChooseGenreHandler implements Handler {
     public List<PartialBotApiMethod<? extends Serializable>> handle(Subscriber subscriber, Update update) {
         SendMessage genres = createMessageTemplate(subscriber);
         //здесь надо будет получать список жанров из базы
-        ArrayList<String> listOfGenres = new ArrayList<>();
-        for(int i = 0; i < 10; i++){
-            listOfGenres.add(String.format("Genre %d", i));
-        }
+        List<Genre> listOfGenres = genreService.getAll();
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
-        for(String genre : listOfGenres){
+        for(Genre genre : listOfGenres){
             InlineKeyboardButton button = new InlineKeyboardButton();
-            button.setText(genre);
+            button.setText(genre.getName());
             HashMap<String, String> callBackData = new HashMap<>();
             callBackData.put("Handler", "GENRE");
-            callBackData.put("Genre", genre);
+            callBackData.put("Genre", genre.getName());
             callBackData.put("Action", "none");
             button.setCallbackData(new Gson().toJson(callBackData));
             buttons.add(Arrays.asList(button));
