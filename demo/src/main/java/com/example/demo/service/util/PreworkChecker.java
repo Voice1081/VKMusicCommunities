@@ -1,6 +1,7 @@
 package com.example.demo.service.util;
 
 import com.example.demo.domain.repository.CommunityRepository;
+import com.example.demo.domain.repository.GenreRepository;
 import com.example.demo.domain.repository.RecordRepository;
 import com.example.demo.domain.repository.SubscriberRepository;
 import com.example.demo.web.rest.errors.exceptions.ApiException;
@@ -13,11 +14,16 @@ import java.util.UUID;
 @Service
 public class PreworkChecker {
     private final RecordRepository recordRepository;
+    private final GenreRepository genreRepository;
     private final CommunityRepository communityRepository;
     private final SubscriberRepository subscriberRepository;
 
-    public PreworkChecker(RecordRepository recordRepository, CommunityRepository communityRepository, SubscriberRepository subscriberRepository) {
+    public PreworkChecker(RecordRepository recordRepository,
+                          GenreRepository genreRepository,
+                          CommunityRepository communityRepository,
+                          SubscriberRepository subscriberRepository) {
         this.recordRepository = recordRepository;
+        this.genreRepository = genreRepository;
         this.communityRepository = communityRepository;
         this.subscriberRepository = subscriberRepository;
     }
@@ -34,6 +40,21 @@ public class PreworkChecker {
         }
         if (!recordRepository.existsById(recordId)) {
             throw new ApiException(String.format("Record with id %s does not exists", recordId), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    public void throwIfGenreAlreadyExists(final String genre) {
+        if (genre != null && genreRepository.existsById(genre)) {
+            throw new ApiException(String.format("Genre with id %s already exists", genre), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public void throwIfGenreDoesNotExists(final String genre) {
+        if (genre == null) {
+            throw new ApiException("Record id is empty", HttpStatus.BAD_REQUEST);
+        }
+        if (!genreRepository.existsById(genre)) {
+            throw new ApiException(String.format("Genre with id %s does not exists", genre), HttpStatus.NOT_FOUND);
         }
     }
 
