@@ -43,7 +43,7 @@ public class ChooseGenreHandler implements Handler {
             button.setText(genre.getName());
             HashMap<String, String> callBackData = new HashMap<>();
             callBackData.put("Handler", "GENRE");
-            callBackData.put("Genre", genre.getName());
+            callBackData.put("Genre", genre.getId());
             callBackData.put("Action", "none");
             button.setCallbackData(new Gson().toJson(callBackData));
             buttons.add(Arrays.asList(button));
