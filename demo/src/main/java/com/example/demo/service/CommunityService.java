@@ -93,4 +93,9 @@ public class CommunityService {
 
         return community;
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Community updateCommunity(final Community community) {
+        return communityRepository.save(community);
+    }
 }

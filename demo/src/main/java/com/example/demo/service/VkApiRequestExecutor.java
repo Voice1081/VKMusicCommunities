@@ -12,7 +12,9 @@ import com.vk.api.sdk.exceptions.ApiException;
 import com.vk.api.sdk.exceptions.ClientException;
 import com.vk.api.sdk.objects.groups.GroupFull;
 import com.vk.api.sdk.objects.wall.WallPostFull;
+import com.vk.api.sdk.objects.wall.responses.GetResponse;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,10 +57,39 @@ public class VkApiRequestExecutor {
         }
     }
 
+    public WallPostFull getLastPost(final String domain) {
+        try {
+            GetResponse response =
+                vkApiClient.wall().get(userActor).domain(domain).offset(0).count(2)
+                    .execute();
+            if (response.getItems().size() > 0) {
+                if (response.getItems().get(0).getIsPinned() != null && response.getItems().get(0).getIsPinned() == 1) {
+                    return response.getItems().get(1);
+                } else {
+                    return response.getItems().get(0);
+                }
+            } else {
+                return null;
+            }
+        } catch (ClientException e) {
+            LOGGER.error("Client error while receiving last post for domain {}", domain, e);
+            throw new BadGatewayException(
+                "Some client exception while accessing VK API, more info in logs");
+        } catch (ApiException e) {
+            LOGGER.error("Api error while receiving last post for domain {}", domain, e);
+            throw new BadGatewayException(
+                "Some api exception while accessing VK API, more info in logs");
+        }
+    }
+
     public List<WallPostFull> getFullPosts(final List<PostMeta> postMetaList) {
         List<String> posts = postMetaList.stream()
             .map(postMeta -> String.format("-%s_%s", postMeta.getCommunityId(), postMeta.getId()))
             .collect(Collectors.toList());
+
+        if (posts.size() == 0) {
+            return Collections.emptyList();
+        }
 
         try {
             return vkApiClient.wall().getById(userActor, posts).execute();
