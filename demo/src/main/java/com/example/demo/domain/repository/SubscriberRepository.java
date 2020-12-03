@@ -12,7 +12,5 @@ import java.util.UUID;
 @Repository
 public interface SubscriberRepository extends JpaRepository<Subscriber, UUID> {
     @Query("select tt from Subscriber tt where tt.nickname = :nickname")
-    List<Subscriber> getAllByNickname(final String nickname);
-    @Query("select tt from Subscriber tt where tt.chatId = :chatId")
-    List<Subscriber> getAllByChatId(@Param("chatId") final long chatId);
+    List<Subscriber> getAllByNickname(final @Param("nickname") String nickname);
 }

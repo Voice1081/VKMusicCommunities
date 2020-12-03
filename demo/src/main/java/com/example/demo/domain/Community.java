@@ -23,51 +23,51 @@ import java.util.UUID;
 )
 public class Community {
     @Id
-    @Column(name = "id", columnDefinition = "UUID")
-    private UUID id;
-    @Column(name = "genre", columnDefinition = "TEXT")
-    private String genre;
+    @Column(name = "community_id", columnDefinition = "bigint")
+    private Long communityId;
+    @Column(name = "name", columnDefinition = "text")
+    private String name;
+    @Column(name = "domain", columnDefinition = "text")
+    private String domain;
     @Type(type = "list-array")
-    @Column(name = "top_week", columnDefinition = "UUID[]")
-    private List<UUID> topWeek = new ArrayList<>();
-    @Type(type = "list-array")
-    @Column(name = "top_month", columnDefinition = "UUID[]")
-    private List<UUID> topMonth = new ArrayList<>();
-    @Type(type = "list-array")
-    @Column(name = "top_year", columnDefinition = "UUID[]")
-    private List<UUID> topYear = new ArrayList<>();
+    @Column(name = "genre", columnDefinition = "TEXT[]")
+    private List<String> genres;
     @Column(name = "link", columnDefinition = "TEXT")
     private String link;
+    @Column(name = "last_post_time", columnDefinition = "bigint")
+    private Long lastPostTime;
 
-    public Community() {
+    public String getName() {
+        return name;
     }
 
-
-    public Community(CommunityDTO communityDTO){
-        this.id = UUID.randomUUID();
-        this.genre = communityDTO.getGenre();
-        this.link = communityDTO.getLink();
-        this.topWeek = communityDTO.getTopWeek();
-        this.topMonth = communityDTO.getTopMonth();
-        this.topYear = communityDTO.getTopYear();
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public UUID getId() {
-        return id;
+    public String getDomain() {
+        return domain;
     }
 
-    public void setId(UUID id) {
-        this.id = id;
+    public void setDomain(String domain) {
+        this.domain = domain;
     }
 
-    public String getGenre() {
-        return genre;
+    public Long getCommunityId() {
+        return communityId;
     }
 
-    public void setGenre(String genre) {
-        this.genre = genre;
+    public void setCommunityId(Long communityId) {
+        this.communityId = communityId;
     }
 
+    public List<String> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
+    }
 
     public String getLink() {
         return link;
@@ -77,39 +77,23 @@ public class Community {
         this.link = link;
     }
 
-    public List<UUID> getTopWeek() {
-        return topWeek;
+    public Long getLastPostTime() {
+        return lastPostTime;
     }
 
-    public void setTopWeek(List<UUID> topWeek) {
-        this.topWeek = topWeek;
-    }
-
-    public List<UUID> getTopMonth() {
-        return topMonth;
-    }
-
-    public void setTopMonth(List<UUID> topMonth) {
-        this.topMonth = topMonth;
-    }
-
-    public List<UUID> getTopYear() {
-        return topYear;
-    }
-
-    public void setTopYear(List<UUID> topYear) {
-        this.topYear = topYear;
+    public void setLastPostTime(Long lastPostTime) {
+        this.lastPostTime = lastPostTime;
     }
 
     @Override
     public String toString() {
         return "Community{" +
-                "id=" + id +
-                ", genre='" + genre + '\'' +
-                ", topWeek=" + topWeek +
-                ", topMonth=" + topMonth +
-                ", topYear=" + topYear +
-                ", link='" + link + '\'' +
-                '}';
+            ", name='" + name + '\'' +
+            ", domain='" + domain + '\'' +
+            ", communityId=" + communityId +
+            ", genres=" + genres +
+            ", link='" + link + '\'' +
+            ", lastPostTime=" + lastPostTime +
+            '}';
     }
 }

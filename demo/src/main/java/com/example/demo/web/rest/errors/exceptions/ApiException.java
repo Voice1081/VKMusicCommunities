@@ -2,7 +2,7 @@ package com.example.demo.web.rest.errors.exceptions;
 
 import org.springframework.http.HttpStatus;
 
-public class ClientException extends RuntimeException {
+public class ApiException extends RuntimeException {
     private HttpStatus httpStatus;
 
     public HttpStatus getHttpStatus() {
@@ -13,7 +13,7 @@ public class ClientException extends RuntimeException {
         this.httpStatus = httpStatus;
     }
 
-    public ClientException(String message, HttpStatus httpStatus) {
+    public ApiException(String message, HttpStatus httpStatus) {
         super(message);
         this.httpStatus = httpStatus;
     }
