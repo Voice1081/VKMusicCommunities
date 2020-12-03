@@ -54,6 +54,7 @@ public class GenreService {
         LOGGER.info("Deleted record object with id {}", id);
     }
 
+    @Transactional(propagation = Propagation.REQUIRED)
     public Genre getById(String id) throws NotFoundException {
         preworkChecker.throwIfGenreDoesNotExists(id);
         return genreRepository.getOne(id);

@@ -11,6 +11,8 @@ import com.google.gson.reflect.TypeToken;
 import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -40,6 +42,7 @@ public class GenreHandler implements Handler {
     }
 
     @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public List<PartialBotApiMethod<? extends Serializable>> handle(Subscriber subscriber, Update update) {
         if (!update.hasCallbackQuery()) return null;
         Gson gson = new Gson();

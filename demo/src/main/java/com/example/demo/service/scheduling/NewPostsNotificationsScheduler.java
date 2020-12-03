@@ -67,8 +67,7 @@ public class NewPostsNotificationsScheduler {
             new StringBuilder(String.format("В сообществе %s новая запись!", community.getName()));
         sb.append("\n");
         sb.append(String.format("https://vk.com/wall%s_%s", newPost.getOwnerId(), newPost.getId()));
-
-        return sb.toString().replaceAll("([_*`])", "\\\\$1");
+        return sb.toString();
     }
 
 }

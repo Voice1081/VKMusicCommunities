@@ -1,8 +1,11 @@
 package com.example.demo.dto;
 
 import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class PostDto {
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy - HH:mm:ss z");
+
     private String label;
     private ZonedDateTime date;
     private Integer likes;
@@ -52,7 +55,7 @@ public class PostDto {
 
     public String toBeautyString(){
         return label + '\n' +
-                date + '\n' +
+                formatter.format(date) + '\n' +
                 "лайков: " + likes + '\n' +
                 "ссылка: " + link;
     }
