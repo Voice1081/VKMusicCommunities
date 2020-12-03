@@ -122,6 +122,7 @@ public class GenreHandler implements Handler {
 
         inlineKeyboardMarkup.setKeyboard(buttons);
         response.setReplyMarkup(inlineKeyboardMarkup);
+        response.enableMarkdown(false);
         return Arrays.asList(response);
     }
 
