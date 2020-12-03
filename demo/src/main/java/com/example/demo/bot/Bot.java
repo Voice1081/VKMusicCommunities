@@ -67,6 +67,7 @@ public class Bot extends TelegramLongPollingBot {
     public void sendMessageToSubscriber(Subscriber subscriber, String text){
         LOGGER.debug("Sending to subscriber {} new message: {}", subscriber.getNickname(), text);
         SendMessage sm = new SendMessage();
+        sm.enableMarkdown(false);
         sm.setChatId(Long.toString(subscriber.getChatId()));
         sm.setText(text);
         executeWithExceptionCheck(sm);
