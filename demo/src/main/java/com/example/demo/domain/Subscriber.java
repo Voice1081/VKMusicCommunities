@@ -28,31 +28,42 @@ public class Subscriber {
     @Column(name = "nickname", columnDefinition = "TEXT")
     private String nickname;
     @Type(type = "list-array")
-    @Column(name = "subscribes_genres", columnDefinition = "TEXT[]")
-    private List<String> subscribesGenres = new ArrayList<>();
+    @Column(name = "subscribers_genres", columnDefinition = "TEXT[]")
+    private List<String> subscribersGenres = new ArrayList<>();
+    @Column(name = "chat_id", columnDefinition = "INTEGER")
+    private long chatId;
 
     @Override
     public String toString() {
         return "Subscriber{" +
                 "id=" + id +
                 ", nickname='" + nickname + '\'' +
-                ", subscribesGenres=" + subscribesGenres +
+                ", subscribersGenres=" + subscribersGenres +
+                ", chatId=" + chatId +
                 '}';
     }
 
     public Subscriber() {
     }
 
-    public Subscriber(UUID id, String nickname, List<String> subscribesGenres) {
+    public Subscriber(UUID id, String nickname, List<String> subscribersGenres, int chatId) {
         this.id = id;
         this.nickname = nickname;
-        this.subscribesGenres = subscribesGenres;
+        this.subscribersGenres = subscribersGenres;
+        this.chatId = chatId;
+    }
+
+    public Subscriber(String nickname, long chatId) {
+        this.id = UUID.randomUUID();;
+        this.nickname = nickname;
+        this.subscribersGenres = new ArrayList<>();
+        this.chatId = chatId;
     }
 
     public Subscriber(SubscriberDTO subscriberDTO){
         this.id = UUID.randomUUID();
         this.nickname = subscriberDTO.getNickname();
-        this.subscribesGenres = subscriberDTO.getSubscribesGenres();
+        this.subscribersGenres = subscriberDTO.getSubscribersGenres();
     }
 
     public UUID getId() {
@@ -71,11 +82,19 @@ public class Subscriber {
         this.nickname = nickname;
     }
 
-    public List<String> getSubscribesGenres() {
-        return subscribesGenres;
+    public List<String> getSubscribersGenres() {
+        return subscribersGenres;
     }
 
-    public void setSubscribesGenres(List<String> subscribesGenres) {
-        this.subscribesGenres = subscribesGenres;
+    public void setSubscribersGenres(List<String> subscribersGenres) {
+        this.subscribersGenres = subscribersGenres;
+    }
+
+    public long getChatId() {
+        return chatId;
+    }
+
+    public void setChatId(int chatId) {
+        this.chatId = chatId;
     }
 }
