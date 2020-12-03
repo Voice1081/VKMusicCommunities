@@ -53,4 +53,9 @@ public class GenreService {
         genreRepository.deleteById(id);
         LOGGER.info("Deleted record object with id {}", id);
     }
+
+    public Genre getById(String id) throws NotFoundException {
+        preworkChecker.throwIfGenreDoesNotExists(id);
+        return genreRepository.getOne(id);
+    }
 }

@@ -2,6 +2,7 @@ package com.example.demo.bot.handler;
 
 import com.example.demo.domain.Subscriber;
 import com.example.demo.dto.enumeration.PostRange;
+import com.example.demo.service.GenreService;
 import com.example.demo.service.PostsService;
 import com.example.demo.service.SubscriberService;
 import com.example.demo.dto.PostDto;
@@ -30,10 +31,12 @@ public class GenreHandler implements Handler {
 
     private final SubscriberService subscriberService;
     private final PostsService postsService;
+    private final GenreService genreService;
 
-    public GenreHandler(SubscriberService subscriberService, PostsService postsService) {
+    public GenreHandler(SubscriberService subscriberService, PostsService postsService, GenreService genreService) {
         this.subscriberService = subscriberService;
         this.postsService = postsService;
+        this.genreService = genreService;
     }
 
     @Override
@@ -89,7 +92,11 @@ public class GenreHandler implements Handler {
             topStr = String.join("\n\n", top.stream().map(PostDto::toBeautyString).collect(Collectors.toList()));
             response.setText(String.format("Топ за месяц по жанру %s:\n %s", genre, topStr));
         } else {
-            response.setText(genre);
+            try {
+                response.setText(genreService.getById(genre).getName());
+            } catch (NotFoundException e) {
+                e.printStackTrace();
+            }
         }
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
