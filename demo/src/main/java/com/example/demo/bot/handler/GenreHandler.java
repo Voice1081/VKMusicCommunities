@@ -1,7 +1,10 @@
 package com.example.demo.bot.handler;
 
 import com.example.demo.domain.Subscriber;
+import com.example.demo.dto.enumeration.PostRange;
+import com.example.demo.service.PostsService;
 import com.example.demo.service.SubscriberService;
+import com.example.demo.dto.PostDto;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import javassist.NotFoundException;
@@ -16,6 +19,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.example.demo.util.TelegramUtil.createMessageTemplate;
 
@@ -25,9 +29,11 @@ public class GenreHandler implements Handler {
     private String botUsername;
 
     private final SubscriberService subscriberService;
+    private final PostsService postsService;
 
-    public GenreHandler(SubscriberService subscriberService) {
+    public GenreHandler(SubscriberService subscriberService, PostsService postsService) {
         this.subscriberService = subscriberService;
+        this.postsService = postsService;
     }
 
     @Override
@@ -43,6 +49,10 @@ public class GenreHandler implements Handler {
 
         String genre = callBack.get("Genre");
         String action = callBack.get("Action");
+
+        List<PostDto> top;
+        String topStr;
+
 
         SendMessage response = createMessageTemplate(subscriber);
 
@@ -67,11 +77,17 @@ public class GenreHandler implements Handler {
                 response.setText(String.format("Вы отписались от уведомлений по жанру %s", genre));
             }
         } else if (action.equals("Top day")) {
-            response.setText(String.format("Топ за день по жанру %s", genre));
+            top = postsService.getRecordsForGenreList(Arrays.asList(genre), PostRange.DAY);
+            topStr = String.join("\n\n", top.stream().map(PostDto::toBeautyString).collect(Collectors.toList()));
+            response.setText(String.format("Топ за день по жанру %s:\n %s", genre, topStr));
         } else if (action.equals("Top week")) {
-            response.setText(String.format("Топ за неделю по жанру %s", genre));
+            top = postsService.getRecordsForGenreList(Arrays.asList(genre), PostRange.WEEK);
+            topStr = String.join("\n\n", top.stream().map(PostDto::toBeautyString).collect(Collectors.toList()));
+            response.setText(String.format("Топ за неделю по жанру %s:\n %s", genre, topStr));
         } else if (action.equals("Top month")) {
-            response.setText(String.format("Топ за месяц по жанру %s", genre));
+            top = postsService.getRecordsForGenreList(Arrays.asList(genre), PostRange.MONTH);
+            topStr = String.join("\n\n", top.stream().map(PostDto::toBeautyString).collect(Collectors.toList()));
+            response.setText(String.format("Топ за месяц по жанру %s:\n %s", genre, topStr));
         } else {
             response.setText(genre);
         }

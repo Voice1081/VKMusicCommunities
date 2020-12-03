@@ -28,7 +28,9 @@ public class HelpHandler implements Handler {
     @Override
     public List<PartialBotApiMethod<? extends Serializable>> handle(Subscriber subscriber, Update update) {
         SendMessage helpMessage = createMessageTemplate(subscriber);
-        helpMessage.setText("хелп");
+        helpMessage.setText("Введите команду /choose_genre, чтобы посмотреть список доступных жанров\n" +
+                "Введите команду /subscribes, чтобы посмотреть список текущих подписок");
+        helpMessage.enableMarkdown(false);
         return Arrays.asList(helpMessage);
     }
 

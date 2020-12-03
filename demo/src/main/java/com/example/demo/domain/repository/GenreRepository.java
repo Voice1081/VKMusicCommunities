@@ -2,7 +2,6 @@ package com.example.demo.domain.repository;
 
 import com.example.demo.domain.Genre;
 import com.example.demo.domain.Record;
-import com.sun.tools.javac.jvm.Gen;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

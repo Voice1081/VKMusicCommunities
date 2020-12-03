@@ -14,8 +14,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import java.io.Serializable;
 import java.util.List;
 
-import static com.example.demo.util.TelegramUtil.createMessageTemplate;
-
 @Component
 public class Bot extends TelegramLongPollingBot {
     private static final Logger LOGGER = LoggerFactory.getLogger(Bot.class);
@@ -68,7 +66,9 @@ public class Bot extends TelegramLongPollingBot {
 
     public void sendMessageToSubscriber(Subscriber subscriber, String text){
         LOGGER.debug("Sending to subscriber {} new message: {}", subscriber.getNickname(), text);
-        SendMessage sm = createMessageTemplate(Long.toString(subscriber.getChatId()));
+        SendMessage sm = new SendMessage();
+        sm.enableMarkdown(false);
+        sm.setChatId(Long.toString(subscriber.getChatId()));
         sm.setText(text);
         executeWithExceptionCheck(sm);
     }
