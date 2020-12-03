@@ -39,4 +39,14 @@ public class PostDto {
     public void setLink(String link) {
         this.link = link;
     }
+
+    @Override
+    public String toString() {
+        return "PostDto{" +
+                "label='" + label + '\'' +
+                ", date=" + date +
+                ", likes=" + likes +
+                ", link='" + link + '\'' +
+                '}';
+    }
 }
