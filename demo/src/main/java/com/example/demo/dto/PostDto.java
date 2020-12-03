@@ -49,4 +49,11 @@ public class PostDto {
                 ", link='" + link + '\'' +
                 '}';
     }
+
+    public String toBeautyString(){
+        return label + '\n' +
+                date + '\n' +
+                "лайков: " + likes + '\n' +
+                "ссылка: " + link;
+    }
 }
