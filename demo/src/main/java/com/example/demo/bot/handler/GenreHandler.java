@@ -52,6 +52,12 @@ public class GenreHandler implements Handler {
 
         String genre = callBack.get("Genre");
         String action = callBack.get("Action");
+        String genreName = null;
+        try {
+            genreName = genreService.getById(genre).getName();
+        } catch (NotFoundException e) {
+            e.printStackTrace();
+        }
 
         List<PostDto> top;
         String topStr;
@@ -67,7 +73,7 @@ public class GenreHandler implements Handler {
                 } catch (NotFoundException e) {
                     e.printStackTrace();
                 }
-                response.setText(String.format("Вы подписались на уведомления по жанру %s", genre));
+                response.setText(String.format("Вы подписались на уведомления по жанру %s", genreName));
             }
         } else if (action.equals("Unsubscribe")) {
             if(subscriber.getSubscribersGenres().contains(genre)) {
@@ -77,26 +83,22 @@ public class GenreHandler implements Handler {
                 } catch (NotFoundException e) {
                     e.printStackTrace();
                 }
-                response.setText(String.format("Вы отписались от уведомлений по жанру %s", genre));
+                response.setText(String.format("Вы отписались от уведомлений по жанру %s", genreName));
             }
         } else if (action.equals("Top day")) {
             top = postsService.getRecordsForGenreList(Arrays.asList(genre), PostRange.DAY);
             topStr = String.join("\n\n", top.stream().map(PostDto::toBeautyString).collect(Collectors.toList()));
-            response.setText(String.format("Топ за день по жанру %s:\n %s", genre, topStr));
+            response.setText(String.format("Топ за день по жанру %s:\n %s", genreName, topStr));
         } else if (action.equals("Top week")) {
             top = postsService.getRecordsForGenreList(Arrays.asList(genre), PostRange.WEEK);
             topStr = String.join("\n\n", top.stream().map(PostDto::toBeautyString).collect(Collectors.toList()));
-            response.setText(String.format("Топ за неделю по жанру %s:\n %s", genre, topStr));
+            response.setText(String.format("Топ за неделю по жанру %s:\n %s", genreName, topStr));
         } else if (action.equals("Top month")) {
             top = postsService.getRecordsForGenreList(Arrays.asList(genre), PostRange.MONTH);
             topStr = String.join("\n\n", top.stream().map(PostDto::toBeautyString).collect(Collectors.toList()));
-            response.setText(String.format("Топ за месяц по жанру %s:\n %s", genre, topStr));
+            response.setText(String.format("Топ за месяц по жанру %s:\n %s", genreName, topStr));
         } else {
-            try {
-                response.setText(genreService.getById(genre).getName());
-            } catch (NotFoundException e) {
-                e.printStackTrace();
-            }
+            response.setText(genreName);
         }
 
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
