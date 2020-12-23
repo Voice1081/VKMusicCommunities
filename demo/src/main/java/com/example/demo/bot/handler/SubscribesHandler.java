@@ -1,8 +1,10 @@
 package com.example.demo.bot.handler;
 
 import com.example.demo.domain.Subscriber;
+import com.example.demo.service.GenreService;
 import com.example.demo.service.SubscriberService;
 import com.google.gson.Gson;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.PartialBotApiMethod;
@@ -22,9 +24,11 @@ public class SubscribesHandler implements Handler {
     private String botUsername;
 
     private final SubscriberService subscriberService;
+    private final GenreService genreService;
 
-    public SubscribesHandler(SubscriberService subscriberService) {
+    public SubscribesHandler(SubscriberService subscriberService, GenreService genreService) {
         this.subscriberService = subscriberService;
+        this.genreService = genreService;
     }
 
     @Override
@@ -41,7 +45,13 @@ public class SubscribesHandler implements Handler {
         else {
             for (String genre : subscriber.getSubscribersGenres()) {
                 InlineKeyboardButton button = new InlineKeyboardButton();
-                button.setText(genre);
+                String genreName = null;
+                try {
+                    genreName = genreService.getById(genre).getName();
+                } catch (NotFoundException e) {
+                    e.printStackTrace();
+                }
+                button.setText(genreName);
                 HashMap<String, String> callBackData = new HashMap<>();
                 callBackData.put("Handler", "GENRE");
                 callBackData.put("Genre", genre);

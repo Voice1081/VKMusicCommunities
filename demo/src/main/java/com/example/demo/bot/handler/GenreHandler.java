@@ -34,6 +34,7 @@ public class GenreHandler implements Handler {
     private final SubscriberService subscriberService;
     private final PostsService postsService;
     private final GenreService genreService;
+    private final Gson gson = new Gson();
 
     public GenreHandler(SubscriberService subscriberService, PostsService postsService, GenreService genreService) {
         this.subscriberService = subscriberService;
@@ -45,7 +46,6 @@ public class GenreHandler implements Handler {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public List<PartialBotApiMethod<? extends Serializable>> handle(Subscriber subscriber, Update update) {
         if (!update.hasCallbackQuery()) return null;
-        Gson gson = new Gson();
         Type strStrHashMapType = new TypeToken<HashMap<String, String>>() {
         }.getType();
         HashMap<String, String> callBack = gson.fromJson(update.getCallbackQuery().getData(), strStrHashMapType);
@@ -61,10 +61,6 @@ public class GenreHandler implements Handler {
         } catch (NotFoundException e) {
             e.printStackTrace();
         }
-
-        List<PostDto> top;
-        String topStr;
-
 
         SendMessage response = createMessageTemplate(subscriber);
 
@@ -89,17 +85,11 @@ public class GenreHandler implements Handler {
                 response.setText(String.format("Вы отписались от уведомлений по жанру %s", genreName));
             }
         } else if (action.equals("Top day")) {
-            top = postsService.getRecordsForGenreList(Arrays.asList(genre), PostRange.DAY);
-            topStr = String.join("\n\n", top.stream().map(PostDto::toBeautyString).collect(Collectors.toList()));
-            response.setText(String.format("Топ за день по жанру %s:\n %s", genreName, topStr));
+            response.setText(getTopStr(genre, genreName, PostRange.DAY));
         } else if (action.equals("Top week")) {
-            top = postsService.getRecordsForGenreList(Arrays.asList(genre), PostRange.WEEK);
-            topStr = String.join("\n\n", top.stream().map(PostDto::toBeautyString).collect(Collectors.toList()));
-            response.setText(String.format("Топ за неделю по жанру %s:\n %s", genreName, topStr));
+            response.setText(getTopStr(genre, genreName, PostRange.WEEK));
         } else if (action.equals("Top month")) {
-            top = postsService.getRecordsForGenreList(Arrays.asList(genre), PostRange.MONTH);
-            topStr = String.join("\n\n", top.stream().map(PostDto::toBeautyString).collect(Collectors.toList()));
-            response.setText(String.format("Топ за месяц по жанру %s:\n %s", genreName, topStr));
+            response.setText(getTopStr(genre, genreName, PostRange.MONTH));
         } else {
             response.setText(genreName);
         }
@@ -107,32 +97,9 @@ public class GenreHandler implements Handler {
         InlineKeyboardMarkup inlineKeyboardMarkup = new InlineKeyboardMarkup();
         List<List<InlineKeyboardButton>> buttons = new ArrayList<>();
 
-        InlineKeyboardButton topDay = new InlineKeyboardButton();
-        HashMap<String, String> topDayCallback = new HashMap<>();
-        topDayCallback.put("Handler", "GENRE");
-        topDayCallback.put("Genre", genre);
-        topDayCallback.put("Action", "Top day");
-        topDay.setCallbackData(gson.toJson(topDayCallback));
-        topDay.setText("Посмотреть топ за день");
-        buttons.add(Arrays.asList(topDay));
-
-        InlineKeyboardButton topWeek = new InlineKeyboardButton();
-        HashMap<String, String> topWeekCallback = new HashMap<>();
-        topWeekCallback.put("Handler", "GENRE");
-        topWeekCallback.put("Genre", genre);
-        topWeekCallback.put("Action", "Top week");
-        topWeek.setCallbackData(gson.toJson(topWeekCallback));
-        topWeek.setText("Посмотреть топ за неделю");
-        buttons.add(Arrays.asList(topWeek));
-
-        InlineKeyboardButton topMonth = new InlineKeyboardButton();
-        HashMap<String, String> topMonthCallback = new HashMap<>();
-        topMonthCallback.put("Handler", "GENRE");
-        topMonthCallback.put("Genre", genre);
-        topMonthCallback.put("Action", "Top month");
-        topMonth.setCallbackData(gson.toJson(topMonthCallback));
-        topMonth.setText("Посмотреть топ за месяц");
-        buttons.add(Arrays.asList(topMonth));
+        buttons.addAll(Arrays.asList(MakeTopCallback(genre, PostRange.DAY),
+                MakeTopCallback(genre, PostRange.WEEK),
+                MakeTopCallback(genre, PostRange.MONTH)));
 
         InlineKeyboardButton subscribed = new InlineKeyboardButton();
         HashMap<String, String> subscsribedCallback = new HashMap<>();
@@ -152,6 +119,56 @@ public class GenreHandler implements Handler {
         response.setReplyMarkup(inlineKeyboardMarkup);
         response.enableMarkdown(false);
         return Arrays.asList(response);
+    }
+
+    private List<InlineKeyboardButton> MakeTopCallback(String genre, PostRange time){
+        InlineKeyboardButton top = new InlineKeyboardButton();
+        HashMap<String, String> topCallback = new HashMap<>();
+        topCallback.put("Handler", "GENRE");
+        topCallback.put("Genre", genre);
+        String action;
+        String text;
+        switch (time){
+            case DAY:
+                action = "Top day";
+                text = "Посмотреть топ за день";
+                break;
+            case WEEK:
+                action = "Top week";
+                text = "Посмотреть топ за неделю";
+                break;
+            case MONTH:
+                action = "Top month";
+                text = "Посмотреть топ за месяц";
+                break;
+            default:
+                action = null;
+                text = null;
+        }
+        topCallback.put("Action", action);
+        top.setCallbackData(gson.toJson(topCallback));
+        top.setText(text);
+        return Arrays.asList(top);
+
+
+    }
+
+    private String getTopStr(String genre, String genreName, PostRange time){
+        List<PostDto> top = postsService.getRecordsForGenreList(Arrays.asList(genre), time);
+        String topStr = String.join("\n\n", top.stream().map(PostDto::toBeautyString)
+                .collect(Collectors.toList()));
+        switch (time){
+            case DAY:
+                topStr = String.format("Топ за день по жанру %s:\n %s", genreName, topStr);
+                break;
+            case WEEK:
+                topStr = String.format("Топ за неделю по жанру %s:\n %s", genreName, topStr);
+                break;
+            case MONTH:
+                topStr = String.format("Топ за месяц по жанру %s:\n %s", genreName, topStr);
+                break;
+        }
+        return topStr;
     }
 
     @Override
