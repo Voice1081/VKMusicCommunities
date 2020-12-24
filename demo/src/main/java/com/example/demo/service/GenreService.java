@@ -7,6 +7,7 @@ import com.example.demo.domain.repository.RecordRepository;
 import com.example.demo.service.util.PreworkChecker;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import javassist.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +37,7 @@ public class GenreService {
     }
 
     public List<Genre> getAll() {
-        return genreRepository.findAll();
+        return genreRepository.findAll().stream().sorted().collect(Collectors.toList());
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)

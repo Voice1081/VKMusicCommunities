@@ -10,7 +10,7 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "genre")
-public class Genre {
+public class Genre implements Comparable<Genre>{
     @Id
     @Column(name = "id", columnDefinition = "text")
     private String id;
@@ -39,5 +39,10 @@ public class Genre {
             "id='" + id + '\'' +
             ", name='" + name + '\'' +
             '}';
+    }
+
+    @Override
+    public int compareTo(Genre o) {
+        return this.name.compareTo(o.getName());
     }
 }
